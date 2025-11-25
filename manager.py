@@ -51,7 +51,7 @@ def add_app(name:str):
 
     main_strings = Path("main.py").read_text(encoding='utf-8').splitlines()
     main_strings.insert(4, IMPORT_ROUTER.format(name=name))
-    main_strings.insert(15,INCLUDE_ROUTER.format(name=name))
+    main_strings.insert(29,INCLUDE_ROUTER.format(name=name))
 
     Path("main.py").write_text('\n'.join(main_strings), encoding='utf-8')
 
