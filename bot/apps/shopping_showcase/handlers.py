@@ -17,9 +17,10 @@ async def choose_server(callback_data: CallbackQuery):
         await callback_data.message.answer("Извините, пока нет доступных vpn", reply_markup=back_to_main)
         return
 
-    message = "Доступные сервера для покупки\n"
+    message = """Стоймость vpn: 150р/месяц\nДоступные сервера для покупки\n"""
 
     for location in locations:
         message += f"{location.name}\n"
     await callback_data.message.answer(message, reply_markup=all_servers(locations))
+
 

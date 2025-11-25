@@ -2,6 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
 
+from bot.core.keyboards import *
 from bot.apps.start.keyboards import *
 
 from bot.database.crud import db_user

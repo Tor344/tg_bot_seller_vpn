@@ -16,11 +16,11 @@ class DB_user():
 
 
 class DB_vpn():
-    async def add(self, user_id: int, data: str,date_break:datetime,server_id:int) -> Vpn:
+    async def add(self, user_id: int,file_name, data: str,date_break:datetime,server_id:int) -> Vpn:
         """date: YYYY-MM-DD"""
         server = await Server.get(id=server_id)
         user = await User.get(id=user_id)
-        return await Vpn.create(user=user, data=data, server=server, date_break=date_break)
+        return await Vpn.create(user=user,file_name=file_name, data=data, server=server, date_break=date_break)
 
     async def get_vpns_by_user(self, user_id:int) -> List[Vpn]:
         user = await User.get(id=user_id)
@@ -31,7 +31,6 @@ class DB_vpn():
     async def get_data(self,id:int)-> str:
         vpn = await Vpn.get(id=id)
         return vpn.data
-
 
     async def update_date_break(self,id: int, new_date_break: datetime) -> bool:
         vpn = await Vpn.get(id=id)

@@ -16,7 +16,8 @@ async def admin_panel(message: Message):
     2. <code>add_location</code> {место положение}
     3. <code>add_admin</code> {id админа}
     4. <code>delete_admin</code> {id админа}
-    5. <code>get_vpn</code> {имя vpn} {время работы vpn в формате YYYY:MM:DD} {Локация}
+    5. <code>get_vpn</code> {имя vpn} {время работы vpn в формате YYYY:MM:DD} {Локация} {Тип vpn}
+    6. <code>add_vpn_type</code> {id админа}
     """,parse_mode=ParseMode.HTML)
 
 @router.message(F.text.startswith("add_server "))

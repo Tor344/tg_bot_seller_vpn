@@ -13,7 +13,8 @@ class User(Model):
 class Vpn(Model):
     id = fields.IntField(pk=True)
     user = fields.ForeignKeyField("models.User", related_name="vpn")
-    data = fields.TextField() #file openvpn or links vless
+    file_name = fields.TextField()
+    data = fields.TextField()
     server = fields.ForeignKeyField("models.Server", related_name="vpn")
     date_break = fields.DatetimeField()
 
@@ -42,3 +43,10 @@ class Server(Model):
 
 class AdminUser(Model):
     tg_id = fields.IntField(pk=True)
+
+
+class VpnType(Model):
+    id = fields.IntField(pk=True)
+    name = fields.CharField(max_length=100)
+    class Meta:
+        table = "vpntype"
