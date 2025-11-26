@@ -51,18 +51,18 @@ async def add_user(api_token: str, ip: str, name_user: str, session: aiohttp.Cli
     1. await add_user(token, ip, name) - создаст новую сессию и закроет её.
     2. await add_user(token, ip, name, session=session) - использует вашу сессию (быстро для циклов).
     """
-    url = f"http://{ip}:8080/new_user/{name_user}"
+    url = f"http://{ip}:8000/new_user/{name_user}"
     headers = get_headers(api_token)
 
     data = await _perform_request('POST', url, headers, session=session, timeout=200)
     if data:
-        return {'data':data.get("data"),
-                "type": data.get("type")}
+        return data.get("link")
+
     return "Error or No Response"
 
 
 async def delete_user(api_token: str, ip: str, name_user: str, session: aiohttp.ClientSession = None):
-    url = f"http://{ip}:8080/delete_user/{name_user}"
+    url = f"http://{ip}:8000/delete_user/{name_user}"
     headers = get_headers(api_token)
 
     status = await _perform_request('DELETE', url, headers, session=session, timeout=10)
@@ -70,7 +70,7 @@ async def delete_user(api_token: str, ip: str, name_user: str, session: aiohttp.
 
 
 async def get_count_user(api_token: str, ip: str, session: aiohttp.ClientSession = None) -> int:
-    url = f"http://{ip}:8080/show_user"
+    url = f"http://{ip}:8000/show_user"
     headers = get_headers(api_token)
 
     timeout = aiohttp.ClientTimeout(total=5)

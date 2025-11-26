@@ -1,6 +1,8 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery,BufferedInputFile
+
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
+from aiogram.enums import ParseMode
 
 from bot.database.crud import db_vpn,db_server
 
@@ -24,11 +26,8 @@ async def print_my_vpn(callback_data: CallbackQuery):
 
 @router.callback_query(F.data.startswith("duplicate_file_"))
 async def user(callback_data: CallbackQuery):
-    await callback_data.message.delete()
     await callback_data.answer()
     data = await db_vpn.get_data(callback_data.data.split("_")[-1])
-    file_bytes = data.encode('utf-8')  # конвертация строки в байты
-    input_file = BufferedInputFile(file_bytes, filename='open.vpn')
-    await callback_data.message.answer_document(document=input_file)
-    await callback_data.message.answer("Ваш файл", reply_markup=back_to_main)
+    await callback_data.message.answer(f"Ваша ссылка для подключения:\n <code>{data}</code>",parse_mode=ParseMode.HTML)
+    await print_my_vpn(callback_data)
 

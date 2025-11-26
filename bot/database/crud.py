@@ -28,9 +28,13 @@ class DB_vpn():
         if not vpn: return []
         return vpn
 
-    async def get_data(self,id:int)-> str:
+    async def get_data(self,id:int)-> datetime:
         vpn = await Vpn.get(id=id)
         return vpn.data
+
+    async def get_date_break(self,id:int)-> str:
+        vpn = await Vpn.get(id=id)
+        return vpn.date_break
 
     async def update_date_break(self,id: int, new_date_break: datetime) -> bool:
         vpn = await Vpn.get(id=id)
@@ -66,8 +70,8 @@ class DB_server:
         server = await Server.all().order_by('id')
         return server
 
-    async def get_all_for_name(self,name: str) -> List[Server]:
-        return await Server.filter(location__name=name).all()
+    async def get_all_location_name(self,location_name: str) -> List[Server]:
+        return await Server.filter(location__name=location_name).all()
 
     async def get_location(self, vpn_id: int) -> str:
         vpn = await Vpn.get(id=vpn_id).select_related("server__location")

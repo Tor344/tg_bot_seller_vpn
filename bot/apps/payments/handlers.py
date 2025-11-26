@@ -2,9 +2,12 @@ import asyncio
 from datetime import datetime
 import uuid
 
+from dateutil.relativedelta import relativedelta
+
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery,BufferedInputFile,LabeledPrice, PreCheckoutQuery
 from aiogram.filters import Command
+from aiogram.enums import ParseMode
 
 from bot.utils.backend import *
 from bot.utils.progress_message_editor import progress_message_editor
@@ -27,6 +30,7 @@ async def process_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
 
 @router.callback_query(F.data.startswith("bay_server_"))
 async def cmd_buy(callback_data: CallbackQuery):
+    await callback_data.answer()
     location = callback_data.data.split("_")[-1]
 
     await callback_data.message.answer_invoice(
@@ -48,31 +52,23 @@ async def cmd_buy(callback_data: CallbackQuery):
 @router.message(F.successful_payment.invoice_payload.startswith("bay_server_"))
 async def process_successful_payment(message: Message):
     payment_info = message.successful_payment
-    print(payment_info.invoice_payload)# нужная информация "Локация"
-    await message.answer("Вы купили Vpn",reply_markup=back_to_main)
+    location = payment_info.invoice_payload.split("_")[-1]# нужная информация "Локация"
+    servers = await db_server.get_all_location_name(location_name=location)
+    server_ip, server_id = await server_search(servers)
 
-    # server_ip, server_id = await server_search(servers)
-    #
-    # name_user = str(uuid.uuid4())
-    #
-    # response = await add_user(
-    #     api_token=API_BACKEND,
-    #     ip=server_ip,
-    #     name_user=name_user)
-    #
-    # data = response.get("data")
-    # type = response.get("type")
-    # date = datetime.now()
-    #
-    # await db_vpn.add(user_id=callback_data.from_user.id,name_user=name_user,data=data,date_break=date, server_id=1,type=type)
-    # if type == "ovpn":
-    #     file_bytes = data.encode('utf-8')  # конвертация строки в байты
-    #     input_file = BufferedInputFile(file_bytes, filename='open.vpn')
-    #     await callback_data.message.answer_document(document=input_file)
-    #     await callback_data.message.answer("Ваш файл",reply_markup=back_to_main)
-    # else:
-    #     await callback_data.message.answer(f"Ваша ссылка для подключения:<code>{data}</code>",reply_markup=back_to_main)
+    name_user = str(uuid.uuid4())
 
+    data = await add_user(
+        api_token=API_BACKEND,
+        ip=server_ip,
+        name_user=name_user)
+
+    date = datetime.now() + relativedelta(months=1)
+
+    await db_vpn.add(user_id=message.from_user.id,file_name=name_user,data=data,date_break=date, server_id=server_id)
+
+    await message.answer(f"Ваша ссылка для подключения:\n <code>{data}</code>",parse_mode=ParseMode.HTML)
+    await message.answer("Вы купили Vpn", reply_markup=back_to_main)
 
 @router.callback_query(F.data.startswith("extend_"))
 async def bayes(callback_data: CallbackQuery):
@@ -81,7 +77,7 @@ async def bayes(callback_data: CallbackQuery):
     server_id = callback_data.data.split("_")[-1]
 
     await callback_data.message.answer_invoice(
-        title=f"Продление  VPN №'{server_id}'",
+        title=f"Продление VPN №'{server_id}'",
         description=f"Продление VPN №{server_id}на 1 месяц",
         payload="extend_" + server_id,
         provider_token="",
@@ -99,9 +95,12 @@ async def bayes(callback_data: CallbackQuery):
 @router.message(F.successful_payment.invoice_payload.startswith("extend_"))
 async def process_successful_payment(message: Message):
     payment_info = message.successful_payment
-    print(payment_info.invoice_payload)# нужная информация "Локация"
-    server_id = payment_info.invoice_payload.split("_")[-1]
-    await message.answer(f"Вы продлили vpn до {"Какого то числа" + f"№{server_id}"}",reply_markup=back_to_main)
+    id = payment_info.invoice_payload.split("_")[-1]
+    date_old = await db_vpn.get_date_break(id)
+    new_date_break = date_old + relativedelta(months=1)
+    await db_vpn.update_date_break(id=id, new_date_break=new_date_break)
+
+    await message.answer(f"Вы продлили vpn до {str(new_date_break.strftime("%Y.%m.%d")) + f" №{id}"}",reply_markup=back_to_main)
 
 
 
