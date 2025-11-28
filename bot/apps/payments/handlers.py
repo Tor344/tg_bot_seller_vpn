@@ -32,7 +32,9 @@ async def process_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
 async def cmd_buy(callback_data: CallbackQuery):
     await callback_data.answer()
     location = callback_data.data.split("_")[-1]
-
+    if server_search(location) == None:
+        await callback_data.message.answer("Извините, в данный момент нет доступных vpn с такой локацией\n Попробуйте позже или выберите другую локацию", reply_markup=back_to_main)
+        return
     await callback_data.message.answer_invoice(
         title=f"Подписка на VPN '{location}'",
         description=f"Активация VPN {location}на 1 месяц",

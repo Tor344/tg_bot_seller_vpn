@@ -96,5 +96,6 @@ async def server_search(servers):
                 server_ip = server.ip
                 server_id = server.id
                 break
-
+    if server_ip == "":
+        return None
     return server_ip, server_id
