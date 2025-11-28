@@ -22,6 +22,9 @@ class DB_vpn():
         user = await User.get(id=user_id)
         return await Vpn.create(user=user,file_name=file_name, data=data, server=server, date_break=date_break)
 
+    async def get_all(self) -> List[Vpn]:
+        return await Vpn.all().prefetch_related("user","server","server__location")
+
     async def get_vpns_by_user(self, user_id:int) -> List[Vpn]:
         user = await User.get(id=user_id)
         vpn = await Vpn.filter(user=user).all()

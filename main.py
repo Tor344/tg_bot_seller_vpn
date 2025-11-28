@@ -6,6 +6,8 @@ from bot.apps.payments.handlers import router as payments_router
 from bot.apps.shopping_showcase.handlers import router as shopping_showcase_router
 from aiogram import Bot, Dispatcher
 
+from bot.core.scheduler import scheduler, up_data_database
+
 import config.settings as set
 
 from bot.apps.start.handlers import router as start_router
@@ -39,6 +41,16 @@ async def main():
     try:
         await db.connect()
         logger.info("Бот запущен")
+        scheduler.add_job(
+        up_data_database,
+        trigger="cron",
+        hour=18,
+        minute=5,
+        args=[bot],  # bot пойдёт в параметр функции
+    )
+
+        scheduler.start()
+
         await dp.start_polling(bot)
 
     except Exception as e:

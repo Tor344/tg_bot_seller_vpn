@@ -45,8 +45,3 @@ class AdminUser(Model):
     tg_id = fields.IntField(pk=True)
 
 
-class VpnType(Model):
-    id = fields.IntField(pk=True)
-    name = fields.CharField(max_length=100)
-    class Meta:
-        table = "vpntype"
