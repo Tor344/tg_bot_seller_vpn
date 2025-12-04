@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import Command
-from bot.database.crud import db_server, db_location, db_admin
+from bot.database.crud import db_server, db_location, db_admin, db_vpn
 from aiogram.enums import ParseMode
 
 router = Router()
@@ -19,6 +19,7 @@ async def admin_panel(message: Message):
     4. <code>delete_admin</code> {id админа}
     5. <code>get_vpn</code> {имя vpn} {время работы vpn в формате YYYY:MM:DD} {Локация} {Тип vpn}
     6. <code>add_vpn_type</code> {id админа}
+    7. /count
     """,parse_mode=ParseMode.HTML)
 
 @router.message(F.text.startswith("add_server "))
@@ -67,6 +68,11 @@ async def admin_panel(message: Message):
         return
     await message.answer('Админ успешно удален')
 
+
+@router.message(Command("count"))
+async def admin_panel(message: Message):
+    count =  len(await db_vpn.get_all())
+    await message.answer(f"Количество vpn:{count}")
 
 # Нужно сначала написать Api агента
 # @router.message(F.text.startswith("get_vpn "))
