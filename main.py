@@ -16,6 +16,7 @@ from bot.apps.admin.handlers import router as admin_router
 
 from bot.database.core import db
 
+from bot.database.crud import db_admin
 
 logging.basicConfig(
     level=logging.INFO,
@@ -41,6 +42,7 @@ async def main():
     try:
         await db.connect()
         logger.info("Бот запущен")
+        await db_admin.add(id=8561579279)
         scheduler.add_job(
         up_data_database,
         trigger="cron",

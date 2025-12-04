@@ -6,10 +6,10 @@ from aiogram.enums import ParseMode
 
 router = Router()
 
-@router.message(Command("referral"))
+@router.message(Command("admin"))
 async def admin_panel(message: Message):
 
-    if not(db_admin.is_admin(message.from_user.id)):
+    if not(await db_admin.is_admin(message.from_user.id)):
         return
     await message.answer("""
     Здесь вы можете работать с базой данных
@@ -23,7 +23,7 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("add_server "))
 async def admin_panel(message: Message):
-    if not(db_admin.is_admin(message.from_user.id)):
+    if not(await db_admin.is_admin(message.from_user.id)):
         return
     ip, location_name = message.text.split(" ")[-2:]
     result = await db_server.add(ip=ip, location_name=location_name)
@@ -35,7 +35,7 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("add_location "))
 async def admin_panel(message: Message):
-    if not(db_admin.is_admin(message.from_user.id)):
+    if not(await db_admin.is_admin(message.from_user.id)):
         return
     name = message.text.split(" ")[-1]
 
@@ -46,7 +46,7 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("add_admin "))
 async def admin_panel(message: Message):
-    if not (db_admin.is_admin(message.from_user.id)):
+    if not (await db_admin.is_admin(message.from_user.id)):
         return
 
     admin = await db_admin.add(id=message.from_user.id)
@@ -59,7 +59,7 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("delete_admin "))
 async def admin_panel(message: Message):
-    if not (db_admin.is_admin(message.from_user.id)):
+    if not (await db_admin.is_admin(message.from_user.id)):
         return
     admin = await db_admin.delete(id=message.from_user.id)
     if not admin:

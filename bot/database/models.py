@@ -42,6 +42,9 @@ class Server(Model):
 
 
 class AdminUser(Model):
-    tg_id = fields.IntField(pk=True)
+    id = fields.IntField(pk=True)
+
+    class Meta:
+        table = "admin_user"
 
 
