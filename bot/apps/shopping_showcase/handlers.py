@@ -7,7 +7,7 @@ from bot.core.keyboards import *
 from bot.apps.shopping_showcase.keyboards import *
 
 router = Router()
-
+from config.settings import COST_VPN
 @router.callback_query(F.data == "choose_server")
 async def choose_server(callback_data: CallbackQuery):
     await callback_data.message.delete()
@@ -17,7 +17,7 @@ async def choose_server(callback_data: CallbackQuery):
         await callback_data.message.answer("Извините, пока нет доступных vpn", reply_markup=back_to_main)
         return
 
-    message = """Стоймость vpn: 150р/месяц\nДоступные сервера для покупки\n"""
+    message = f"""Стоймость vpn: {COST_VPN}звезд/месяц\nДоступные сервера для покупки\n"""
 
     for location in locations:
         message += f"{location.name}\n"

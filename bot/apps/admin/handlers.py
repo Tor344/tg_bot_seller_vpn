@@ -6,10 +6,11 @@ from aiogram.enums import ParseMode
 
 router = Router()
 
-@router.message(Command("admin"))
+@router.message(Command("referral"))
 async def admin_panel(message: Message):
-    # if not(db_admin.is_admin(message.from_user.id)):
-    #     return
+
+    if not(db_admin.is_admin(message.from_user.id)):
+        return
     await message.answer("""
     Здесь вы можете работать с базой данных
     1. <code>add_server</code> {ip сервера} {локация сервера}
@@ -22,8 +23,8 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("add_server "))
 async def admin_panel(message: Message):
-    # if not(db_admin.is_admin(message.from_user.id)):
-    #     return
+    if not(db_admin.is_admin(message.from_user.id)):
+        return
     ip, location_name = message.text.split(" ")[-2:]
     result = await db_server.add(ip=ip, location_name=location_name)
     if not result:
@@ -34,8 +35,8 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("add_location "))
 async def admin_panel(message: Message):
-    # if not(db_admin.is_admin(message.from_user.id)):
-    #     return
+    if not(db_admin.is_admin(message.from_user.id)):
+        return
     name = message.text.split(" ")[-1]
 
     await db_location.add(name=name)
@@ -45,8 +46,8 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("add_admin "))
 async def admin_panel(message: Message):
-    # if not (db_admin.is_admin(message.from_user.id)):
-    #     return
+    if not (db_admin.is_admin(message.from_user.id)):
+        return
 
     admin = await db_admin.add(id=message.from_user.id)
 
@@ -58,8 +59,8 @@ async def admin_panel(message: Message):
 
 @router.message(F.text.startswith("delete_admin "))
 async def admin_panel(message: Message):
-    # if not (db_admin.is_admin(message.from_user.id)):
-    #     return
+    if not (db_admin.is_admin(message.from_user.id)):
+        return
     admin = await db_admin.delete(id=message.from_user.id)
     if not admin:
         await message.answer("Нет такого админа")
@@ -67,7 +68,7 @@ async def admin_panel(message: Message):
     await message.answer('Админ успешно удален')
 
 
-#Нужно сначала написать Api агента
+# Нужно сначала написать Api агента
 # @router.message(F.text.startswith("get_vpn "))
 # async def admin_panel(message: Message):
 #     if not (db_admin.is_admin(message.from_user.id)):
