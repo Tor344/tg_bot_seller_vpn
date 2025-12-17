@@ -74,6 +74,9 @@ async def admin_panel(message: Message):
     count =  len(await db_vpn.get_all())
     await message.answer(f"Количество vpn:{count}")
 
+
+
+
 # Нужно сначала написать Api агента
 # @router.message(F.text.startswith("get_vpn "))
 # async def admin_panel(message: Message):
